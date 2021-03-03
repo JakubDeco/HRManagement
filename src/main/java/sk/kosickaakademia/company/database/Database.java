@@ -1,5 +1,6 @@
 package sk.kosickaakademia.company.database;
 
+import sk.kosickaakademia.company.entity.User;
 import sk.kosickaakademia.company.log.Log;
 
 import java.io.FileInputStream;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -14,6 +16,8 @@ public class Database {
     private String url;
     private String user;
     private String password;
+    private final String queryInsertNewUser = "insert into user(fName, lName. age, gender" +
+            " values(?,?,?,?)";
 
     public Database(String filepath){
         loadConfig(filepath);
@@ -56,5 +60,27 @@ public class Database {
             Log.error(e.toString());
         }
         return null;
+    }
+
+    public boolean insertNewUser(User user){
+        Connection connection = getConnection();
+        if (connection == null) return false;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(queryInsertNewUser);
+            ps.setString(1, user.getfName());
+            ps.setString(2, user.getlName());
+            ps.setInt(3, user.getAge());
+            ps.setInt(4, user.getGender().getValue());
+
+            if (ps.executeUpdate() != 0){
+                Log.print("New user successfully added to database.");
+                return true;
+            }
+        } catch (SQLException e) {
+            Log.error(e.toString());
+        }
+
+        return false;
     }
 }
