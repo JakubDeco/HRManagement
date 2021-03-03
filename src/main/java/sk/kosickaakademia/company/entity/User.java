@@ -6,18 +6,18 @@ public class User {
     private int id;
     private String fName;
     private String lName;
-    private int name;
+    private int age;
     private Gender gender;
 
-    public User(String fName, String lName, int name, int gender) {
+    public User(String fName, String lName, int age, int gender) {
         this.fName = fName;
         this.lName = lName;
-        this.name = name;
+        this.age = age;
         this.gender = gender==0 ? Gender.MALE : gender == 1 ? Gender.FEMALE : Gender.OTHER;
     }
 
-    public User(int id, String fName, String lName, int name, int gender) {
-        this(fName, lName, name, gender);
+    public User(int id, String fName, String lName, int age, int gender) {
+        this(fName, lName, age, gender);
         this.id = id;
     }
 
@@ -33,8 +33,8 @@ public class User {
         return lName;
     }
 
-    public int getName() {
-        return name;
+    public int getAge() {
+        return age;
     }
 
     public Gender getGender() {
