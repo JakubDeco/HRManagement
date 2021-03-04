@@ -1,15 +1,15 @@
 package sk.kosickaakademia.company.database;
 
 import sk.kosickaakademia.company.entity.User;
+import sk.kosickaakademia.company.enumerator.Gender;
 import sk.kosickaakademia.company.log.Log;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class Database {
@@ -75,12 +75,71 @@ public class Database {
 
             if (ps.executeUpdate() != 0){
                 Log.print("New user successfully added to database.");
+                closeConnection(connection);
                 return true;
             }
         } catch (SQLException e) {
             Log.error(e.toString());
         }
 
+        closeConnection(connection);
         return false;
     }
+
+    public List<User> getFemales(){
+        Log.info("Executing Database.getFemales");
+        Connection connection = getConnection();
+
+        if (connection != null) {
+            String query = "select * from user where gender = 1";
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                List<User> list = executeSelect(ps);
+                closeConnection(connection);
+                return list;
+            } catch (SQLException e) {
+                Log.error(e.toString());
+            }
+        }
+        return null;
+    }
+
+    public List<User> getMales(){
+        Log.info("Executing Database.getMales");
+        Connection connection = getConnection();
+
+        if (connection != null) {
+            String query = "select * from user where gender = 0";
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                List<User> list = executeSelect(ps);
+                closeConnection(connection);
+                return list;
+            } catch (SQLException e) {
+                Log.error(e.toString());
+            }
+        }
+        return null;
+    }
+
+    private List<User> executeSelect(PreparedStatement ps) {
+        List<User> list = new ArrayList<>();
+        try {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                int id = rs.getInt("id");
+                String fName = rs.getString("fName");
+                String lName = rs.getString("lName");
+                int age = rs.getInt("age");
+                int gender = rs.getInt("gender");
+
+                list.add(new User(id, fName, lName, age, gender));
+            }
+        } catch (SQLException e) {
+            Log.error(e.toString());
+        }
+        return list;
+    }
+
+    //getUsersByAge
 }
