@@ -141,5 +141,29 @@ public class Database {
         return list;
     }
 
-    //getUsersByAge
+    public List<User> getUsersByAge(int from, int to){
+
+        if (from > 0 && to > 0 && from >=to && to < 110){
+
+            Connection connection = getConnection();
+            if (connection != null){
+
+                String query = "select * from user where age between ? and ?";
+                try {
+                    PreparedStatement ps = connection.prepareStatement(query);
+                    ps.setInt(1, from);
+                    ps.setInt(2, to);
+
+                    List<User> list = executeSelect(ps);
+                    closeConnection(connection);
+
+                    return list;
+                } catch (SQLException e) {
+                    Log.error(e.toString());
+                }
+            }
+
+        }
+        return null;
+    }
 }
