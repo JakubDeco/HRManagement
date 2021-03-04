@@ -185,5 +185,27 @@ public class Database {
         }
         return null;
     }
-    // getUser(id)
+
+    public User getUserById(int id){
+        Log.info("Executing Database.getUserById");
+        Connection connection = getConnection();
+
+        if (connection != null) {
+            String query = "select * from user where id = ?";
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                List<User> list = executeSelect(ps);
+                User user = null;
+
+                if (!list.isEmpty())
+                    user = list.get(0);
+
+                closeConnection(connection);
+                return user;
+            } catch (SQLException e) {
+                Log.error(e.toString());
+            }
+        }
+        return null;
+    }
 }
