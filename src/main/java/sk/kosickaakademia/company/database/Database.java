@@ -16,7 +16,7 @@ public class Database {
     private String url;
     private String user;
     private String password;
-    private final String queryInsertNewUser = "insert into user(fName, lName. age, gender" +
+    private final String queryInsertNewUser = "insert into user(fName, lName, age, gender)" +
             " values(?,?,?,?)";
 
     public Database(String filepath){
