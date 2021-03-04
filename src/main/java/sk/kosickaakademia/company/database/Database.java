@@ -1,7 +1,6 @@
 package sk.kosickaakademia.company.database;
 
 import sk.kosickaakademia.company.entity.User;
-import sk.kosickaakademia.company.enumerator.Gender;
 import sk.kosickaakademia.company.log.Log;
 
 import java.io.FileInputStream;
@@ -16,8 +15,6 @@ public class Database {
     private String url;
     private String user;
     private String password;
-    private final String queryInsertNewUser = "insert into user(fName, lName, age, gender)" +
-            " values(?,?,?,?)";
 
     public Database(String filepath){
         loadConfig(filepath);
@@ -52,21 +49,24 @@ public class Database {
         return null;
     }
 
-    public Connection closeConnection(Connection connection){
+    public void closeConnection(Connection connection){
         try {
             connection.close();
             Log.print("Connection closed");
         } catch (SQLException e) {
             Log.error(e.toString());
         }
-        return null;
     }
 
     public boolean insertNewUser(User user){
+        Log.info("Executing Database.insertNewUser");
+
         Connection connection = getConnection();
         if (connection == null) return false;
 
         try {
+            String queryInsertNewUser = "insert into user(fName, lName, age, gender)" +
+                    " values(?,?,?,?)";
             PreparedStatement ps = connection.prepareStatement(queryInsertNewUser);
             ps.setString(1, user.getfName());
             ps.setString(2, user.getlName());
@@ -142,8 +142,9 @@ public class Database {
     }
 
     public List<User> getUsersByAge(int from, int to){
+        Log.info("Executing Database.getUsersByAge");
 
-        if (from > 0 && to > 0 && from >=to && to < 110){
+        if (from > 0 && to > 0 && from <=to && to < 110){
 
             Connection connection = getConnection();
             if (connection != null){
@@ -166,4 +167,23 @@ public class Database {
         }
         return null;
     }
+
+    public List<User> getAllUsers(){
+        Log.info("Executing Database.getAllUsers");
+        Connection connection = getConnection();
+
+        if (connection != null) {
+            String query = "select * from user";
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                List<User> list = executeSelect(ps);
+                closeConnection(connection);
+                return list;
+            } catch (SQLException e) {
+                Log.error(e.toString());
+            }
+        }
+        return null;
+    }
+    // getUser(id)
 }
