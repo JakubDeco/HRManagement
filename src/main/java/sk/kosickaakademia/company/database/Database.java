@@ -229,4 +229,24 @@ public class Database {
         }
         return false;
     }
+
+    public List<User> getUsersWithPattern(String pattern){
+        Log.info("Executing Database.getUsersWithPattern");
+        Connection connection = getConnection();
+
+        if (connection != null) {
+            String query = "select * from user where fName like ? or lName like ?";
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                ps.setString(1, "%"+pattern+"%");
+                ps.setString(2, "%"+pattern+"%");
+                List<User> list = executeSelect(ps);
+                closeConnection(connection);
+                return list;
+            } catch (SQLException e) {
+                Log.error(e.toString());
+            }
+        }
+        return null;
+    }
 }
