@@ -208,4 +208,25 @@ public class Database {
         }
         return null;
     }
+
+    public boolean changeAge(int id, int age){
+        Log.info("Executing Database.changeAge");
+        if (id > 0 && age > 0){
+            Connection connection = getConnection();
+            String query = "update user set age = ? where id = ?";
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                ps.setInt(1, age);
+                ps.setInt(2, id);
+
+                if (ps.executeUpdate() != 0){
+                    closeConnection(connection);
+                    return true;
+                }
+            } catch (SQLException e) {
+                Log.error(e.toString());
+            }
+        }
+        return false;
+    }
 }
