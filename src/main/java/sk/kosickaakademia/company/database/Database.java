@@ -16,8 +16,8 @@ public class Database {
     private String user;
     private String password;
 
-    public Database(String filepath){
-        loadConfig(filepath);
+    public Database(){
+        loadConfig("src/main/resources/configSchool.properties");
     }
 
     private void loadConfig(String filepath){
