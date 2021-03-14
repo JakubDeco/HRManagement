@@ -22,26 +22,45 @@ public class Controller {
 
     @PostMapping(path = "/user/new")
     public ResponseEntity<String> insertNewUser(@RequestBody String data){
+        JSONObject response = new JSONObject();
         try {
             JSONObject jsonObject = (JSONObject) new JSONParser().parse(data);
 
-            String fName = ((String) jsonObject.get("fName")).trim();
-            String lName = ((String) jsonObject.get("lName")).trim();
+            String fName = ((String) jsonObject.get("fName"));
+            String lName = ((String) jsonObject.get("lName"));
             int age = Integer.parseInt(String.valueOf(jsonObject.get("age")));
             String gender = (String) jsonObject.get("gender");
 
-            JSONObject response = new JSONObject();
-            if (fName.isBlank() || lName.isBlank() || age < 1 || gender.isBlank()){
+            if ( fName.isBlank() || lName.isBlank() || age < 1 ||
+                    ( !gender.toLowerCase().equals("male")
+                            && !gender.toLowerCase().equals("female")
+                            && !gender.toLowerCase().equals("other") ) ){
                 Log.error("Incorrect request body.");
                 response.put("error", "Incorrect request body.");
                 return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body(response.toJSONString());
             }
-        } catch (ParseException e) {
-            Log.error(e.toString());
-        }
+            int userGender = 0;
+            switch (gender.toLowerCase()){
+                case "female" -> userGender = 1;
+                case "other" -> userGender = 2;
+            }
 
-        return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body(null);
-        // todo continue
+            Database database = new Database();
+            if (database.insertNewUser(new User(fName,lName,age,userGender))){
+                response.put("info", "New user successfully added.");
+                return ResponseEntity.status(201).contentType(MediaType.APPLICATION_JSON).body(response.toJSONString());
+            }
+            else {
+                response.put("error", "Database error occurred.");
+                return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON).body(response.toJSONString());
+            }
+
+        } catch (ParseException | NullPointerException e) {
+            Log.error("Incorrect request body.");
+            response.put("error", "Incorrect request body.");
+            return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body(response.toJSONString());
+
+        }
     }
 
     @GetMapping(path = "/users")
