@@ -5,10 +5,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sk.kosickaakademia.company.database.Database;
 import sk.kosickaakademia.company.entity.User;
 import sk.kosickaakademia.company.log.Log;
@@ -68,6 +65,14 @@ public class Controller {
         Database database = new Database();
         List<User> list = database.getAllUsers();
         String response = new Util().getJson(list);
+
+        return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(response);
+    }
+
+    @GetMapping(path = "/user/age")
+    public ResponseEntity<String> getUsersByAge(@RequestParam(value = "from") int from, @RequestParam(value = "to") int to){
+        Util util = new Util();
+        String response = util.getJson(new Database().getUsersByAge(from,to));
 
         return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(response);
     }
