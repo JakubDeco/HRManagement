@@ -86,32 +86,19 @@ public class Database {
         return false;
     }
 
-    public List<User> getFemales(){
-        Log.info("Executing Database.getFemales");
+    public List<User> getUsersByGender(int gender){
+        Log.info("Executing Database.getUserByGender");
         Connection connection = getConnection();
 
-        if (connection != null) {
-            String query = "select * from user where gender = 1";
-            try {
-                PreparedStatement ps = connection.prepareStatement(query);
-                List<User> list = executeSelect(ps);
-                closeConnection(connection);
-                return list;
-            } catch (SQLException e) {
-                Log.error(e.toString());
-            }
-        }
-        return null;
-    }
-
-    public List<User> getMales(){
-        Log.info("Executing Database.getMales");
-        Connection connection = getConnection();
+        if (gender < 0 || gender > 2)
+            return null;
 
         if (connection != null) {
-            String query = "select * from user where gender = 0";
+            String query = "select * from user where gender = ?";
             try {
                 PreparedStatement ps = connection.prepareStatement(query);
+                ps.setInt(1, gender);
+
                 List<User> list = executeSelect(ps);
                 closeConnection(connection);
                 return list;
