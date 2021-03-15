@@ -99,4 +99,17 @@ public class Controller {
             return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(response);
         }
     }
+
+    @GetMapping(path = "/user")
+    public ResponseEntity<String> getUserByID(@RequestParam(value = "id") int id) {
+        Util util = new Util();
+        if (id > 0) {
+            String response = util.getJson(new Database().getUserById(id));
+
+            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(response);
+        }
+        else {
+            return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body("{}");
+        }
+    }
 }

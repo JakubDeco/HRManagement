@@ -177,10 +177,11 @@ public class Database {
         Log.info("Executing Database.getUserById");
         Connection connection = getConnection();
 
-        if (connection != null) {
+        if (id < 1 || connection != null) {
             String query = "select * from user where id = ?";
             try {
                 PreparedStatement ps = connection.prepareStatement(query);
+                ps.setInt(1, id);
                 List<User> list = executeSelect(ps);
                 User user = null;
 
