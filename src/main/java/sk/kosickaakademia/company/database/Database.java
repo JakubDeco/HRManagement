@@ -1,5 +1,6 @@
 package sk.kosickaakademia.company.database;
 
+import sk.kosickaakademia.company.entity.Statistic;
 import sk.kosickaakademia.company.entity.User;
 import sk.kosickaakademia.company.log.Log;
 
@@ -231,6 +232,46 @@ public class Database {
                 List<User> list = executeSelect(ps);
                 closeConnection(connection);
                 return list;
+            } catch (SQLException e) {
+                Log.error(e.toString());
+            }
+        }
+        return null;
+    }
+
+    public Statistic getStats(){
+        Log.info("Executing Database.getStats");
+        Connection connection = getConnection();
+
+        if (connection != null) {
+            String query = "select count(id) as countID," +
+                    " sum(if(gender=0, 1, 0)) as male," +
+                    " sum(if(gender=1, 1, 0)) as female," +
+                    " sum(if(gender=2, 1, 0)) as other," +
+                    " avg(age) as ageAvg," +
+                    " min(age) as ageMin," +
+                    " max(age) as c" +
+                    " from user";
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                //System.out.println(ps);
+                ResultSet rs = ps.executeQuery();
+
+                Statistic stats = null;
+                if (rs.next()){
+                    int count = rs.getInt("countID");
+                    int male = rs.getInt("male");
+                    int female = rs.getInt("female");
+                    int other = rs.getInt("other");
+                    double age = rs.getDouble("ageAvg");
+                    int min = rs.getInt("ageMin");
+                    int max = rs.getInt("ageMin");
+
+                    stats = new Statistic(count, male, female, other, age, min, max);
+                }
+
+                closeConnection(connection);
+                return stats;
             } catch (SQLException e) {
                 Log.error(e.toString());
             }
