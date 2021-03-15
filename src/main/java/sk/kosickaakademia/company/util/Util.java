@@ -2,6 +2,7 @@ package sk.kosickaakademia.company.util;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import sk.kosickaakademia.company.entity.Statistic;
 import sk.kosickaakademia.company.entity.User;
 
 import java.text.SimpleDateFormat;
@@ -77,5 +78,29 @@ public class Util {
             return "";
         name = name.trim();
         return name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
+    }
+
+    public String getJson(Statistic stats){
+        JSONObject root = new JSONObject();
+        root.put("dateTime", Util.getDateTime());
+
+        if(stats != null){
+
+            // creating users array key and it's content
+            JSONObject statsObject = new JSONObject();
+            statsObject.put("count", stats.getCount());
+            statsObject.put("male", stats.getMale());
+            statsObject.put("female", stats.getFemale());
+            statsObject.put("other", stats.getOther());
+            statsObject.put("averageAge", stats.getAge());
+            statsObject.put("minAge", stats.getMin());
+            statsObject.put("maxAge", stats.getMax());
+
+            root.put("statistics", statsObject);
+
+            return root.toJSONString();
+        }
+
+        return root.toJSONString();
     }
 }
