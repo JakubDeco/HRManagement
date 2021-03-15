@@ -218,7 +218,7 @@ public class Database {
         return false;
     }
 
-    public List<User> getUsersWithPattern(String pattern){
+    public List<User> getUsersWithString(String str){
         Log.info("Executing Database.getUsersWithPattern");
         Connection connection = getConnection();
 
@@ -226,8 +226,8 @@ public class Database {
             String query = "select * from user where fName like ? or lName like ?";
             try {
                 PreparedStatement ps = connection.prepareStatement(query);
-                ps.setString(1, "%"+pattern+"%");
-                ps.setString(2, "%"+pattern+"%");
+                ps.setString(1, "%"+str+"%");
+                ps.setString(2, "%"+str+"%");
                 List<User> list = executeSelect(ps);
                 closeConnection(connection);
                 return list;

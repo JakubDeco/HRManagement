@@ -100,7 +100,7 @@ public class Controller {
         }
     }
 
-    @GetMapping(path = "/user")
+    @GetMapping(path = "/user/id")
     public ResponseEntity<String> getUserByID(@RequestParam(value = "id") int id) {
         Util util = new Util();
         if (id > 0) {
@@ -110,6 +110,19 @@ public class Controller {
         }
         else {
             return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body("{}");
+        }
+    }
+
+    @GetMapping(path = "/user/has")
+    public ResponseEntity<String> getUsersWithString(@RequestParam(value = "search") String str){
+        Util util = new Util();
+        if (str == null || str.isEmpty()) {
+            return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body("{}");
+        }
+        else {
+            String response = util.getJson(new Database().getUsersWithString(str));
+
+            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(response);
         }
     }
 }
