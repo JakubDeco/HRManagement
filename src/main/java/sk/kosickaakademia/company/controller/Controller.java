@@ -125,4 +125,13 @@ public class Controller {
             return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(response);
         }
     }
+
+    @GetMapping(path = "/")
+    public ResponseEntity<String> getStatistic(){
+        Util util = new Util();
+        String response = util.getJson(new Database().getStats());
+
+        return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(response);
+    }
+    //todo methods for each status response entity
 }

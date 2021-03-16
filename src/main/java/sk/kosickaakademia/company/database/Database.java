@@ -250,11 +250,11 @@ public class Database {
                     " sum(if(gender=2, 1, 0)) as other," +
                     " avg(age) as ageAvg," +
                     " min(age) as ageMin," +
-                    " max(age) as c" +
+                    " max(age) as ageMax" +
                     " from user";
             try {
                 PreparedStatement ps = connection.prepareStatement(query);
-                //System.out.println(ps);
+                System.out.println(ps);
                 ResultSet rs = ps.executeQuery();
 
                 Statistic stats = null;
@@ -265,7 +265,7 @@ public class Database {
                     int other = rs.getInt("other");
                     double age = rs.getDouble("ageAvg");
                     int min = rs.getInt("ageMin");
-                    int max = rs.getInt("ageMin");
+                    int max = rs.getInt("ageMax");
 
                     stats = new Statistic(count, male, female, other, age, min, max);
                 }
