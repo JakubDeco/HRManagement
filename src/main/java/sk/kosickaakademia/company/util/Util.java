@@ -8,6 +8,7 @@ import sk.kosickaakademia.company.entity.User;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 public class Util {
     public String getJson(List<User> list){
@@ -102,5 +103,19 @@ public class Util {
         }
 
         return root.toJSONString();
+    }
+
+    public String generateToken(){
+        StringBuilder token = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 40; i++) {
+            switch (random.nextInt(3)){
+                case 0 -> token.append(random.nextInt(10)); // digit
+                case 1 -> token.append((char) (random.nextInt(27)+97)); // lowerCase number
+                case 2 -> token.append((char) (random.nextInt(27)+65)); // UpperCase number
+            }
+        }
+
+        return token.toString();
     }
 }
