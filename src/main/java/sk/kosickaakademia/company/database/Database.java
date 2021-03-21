@@ -278,4 +278,26 @@ public class Database {
         }
         return null;
     }
+
+    public boolean deleteUser(int id){
+        Log.info("Executing Database.deleteUser");
+
+        if (id < 1)
+            return false;
+
+        Connection connection = getConnection();
+        if (connection != null){
+            String query = "delete from user where id=?";
+            try {
+                PreparedStatement ps = connection.prepareStatement(query);
+                ps.setInt(1, id);
+
+                return ps.executeUpdate() != 0;
+            } catch (SQLException e) {
+                Log.error(e.toString());
+            }
+        }
+
+        return false;
+    }
 }

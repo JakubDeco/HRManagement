@@ -111,8 +111,8 @@ public class Util {
         for (int i = 0; i < 40; i++) {
             switch (random.nextInt(3)){
                 case 0 -> token.append(random.nextInt(10)); // digit
-                case 1 -> token.append((char) (random.nextInt(27)+97)); // lowerCase number
-                case 2 -> token.append((char) (random.nextInt(27)+65)); // UpperCase number
+                case 1 -> token.append((char) (random.nextInt(26)+97)); // lowerCase number
+                case 2 -> token.append((char) (random.nextInt(26)+65)); // UpperCase number
             }
         }
 

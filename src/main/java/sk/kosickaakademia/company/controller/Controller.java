@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import sk.kosickaakademia.company.database.Database;
 import sk.kosickaakademia.company.entity.User;
 import sk.kosickaakademia.company.log.Log;
+import sk.kosickaakademia.company.util.Status;
 import sk.kosickaakademia.company.util.Util;
 
 import java.util.List;
@@ -124,6 +125,35 @@ public class Controller {
 
             return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(response);
         }
+    }
+
+    @PutMapping(path = "/user/{id}")
+    public ResponseEntity<String> changeUserAge(@PathVariable int id, @RequestBody String body){
+        if (id < 1 || body == null || body.isBlank())
+            return Status.status400("Bad request.");
+
+        try {
+            JSONObject jsonObject = (JSONObject) new JSONParser().parse(body);
+            int newAge = Integer.parseInt(String.valueOf(jsonObject.get("newAge")));
+            if (new Database().changeAge(id, newAge)){
+                return Status.status200("User age has been changed.");
+            } else {
+                return Status.status404("User not found.");
+            }
+        } catch (ParseException e) {
+            return Status.status400("Bad request.");
+        }
+    }
+
+    @DeleteMapping(path = "/user/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable int id){
+        if (id < 1)
+            return Status.status400("Bad request.");
+
+        if (new Database().deleteUser(id))
+            return Status.status200("User deleted.");
+        else
+            return Status.status404("User not found.");
     }
 
     @GetMapping(path = "/")
