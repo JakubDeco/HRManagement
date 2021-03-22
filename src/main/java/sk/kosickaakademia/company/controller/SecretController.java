@@ -1,5 +1,6 @@
 package sk.kosickaakademia.company.controller;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -79,6 +80,40 @@ public class SecretController {
         }
 
         return Status.status401("Invalid token.");
+    }
+    
+    @GetMapping(path = "/menu")
+    public ResponseEntity<String> menu(@RequestHeader("token") String token){
+        JSONObject response = new JSONObject();
+        response.put("breakfast", "pancakes");
+        response.put("lunch", "burger");
+        response.put("dinner", "fried cheese with french fries");
+
+        if (isLoggedIn(token)){
+            // if logged in then also employees working
+            JSONArray employees = new JSONArray();
+            employees.add("Vincent Hugsle");
+            employees.add("Sarah Tugh");
+            response.put("employees", employees);
+
+            return Status.status200(response);
+        }else {
+            // without login send just menu for the day
+            return Status.status200(response);
+        }
+    }
+
+    private boolean isLoggedIn(String token) {
+        if (token == null || token.isBlank())
+            return false;
+
+        for (Map.Entry<String, String> entry: loggedUsers.entrySet()){
+            if (("Bearer "+entry.getValue()).equals(token)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
