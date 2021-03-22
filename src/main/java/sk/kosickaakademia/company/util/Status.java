@@ -11,6 +11,12 @@ public abstract class Status {
         return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body(response.toJSONString());
     }
 
+    public static ResponseEntity<String> status500(String message){
+        JSONObject response = new JSONObject();
+        response.put("error", message);
+        return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body(response.toJSONString());
+    }
+
     public static ResponseEntity<String> status404(String message){
         JSONObject response = new JSONObject();
         response.put("error", message);

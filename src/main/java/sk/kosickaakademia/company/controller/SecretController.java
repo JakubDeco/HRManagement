@@ -70,8 +70,11 @@ public class SecretController {
 
         for (Map.Entry<String, String> entry: loggedUsers.entrySet()){
             if (("Bearer "+entry.getValue()).equals(token)) {
-                loggedUsers.remove(entry.getKey(), entry.getValue());
-                return Status.status200("You have been logged out.");
+                if (loggedUsers.remove(entry.getKey(), entry.getValue())) {
+                    return Status.status200("You have been logged out.");
+                }else {
+                    return Status.status500("Internal server error");
+                }
             }
         }
 
