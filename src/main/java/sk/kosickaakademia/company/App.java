@@ -4,20 +4,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-/**
- * Hello world!
- *
- */
+import java.util.Collections;
+
+
 @SpringBootApplication
 @ComponentScan(basePackages = "sk.kosickaakademia.company.controller")
 public class App {
     public static void main( String[] args ) {
-        SpringApplication.run(App.class, args);
-        /*Database database = new Database("src/main/resources/configSchool.properties");
-        //database.insertNewUser(new User("Karol", "Kosak", 66, 0));
-        Util util = new Util();
-        System.out.println(database.getMales());
-        System.out.println(database.getUserById(3));
-        System.out.println(util.getJson(database.getAllUsers()));*/
+        SpringApplication app = new SpringApplication(App.class);
+        app.setDefaultProperties(Collections
+                .singletonMap("server.port", args[0]));
+        app.run(args);
+//        SpringApplication.run(App.class, args);
     }
 }
