@@ -61,10 +61,18 @@ public class Controller {
     }
 
     @GetMapping(path = "/users")
-    public ResponseEntity<String> getAllUsers(){
+    public ResponseEntity<String> getAllUsers(@RequestParam(value = "type", required = false) String type){
         Database database = new Database();
+        Util util = new Util();
         List<User> list = database.getAllUsers();
-        String response = new Util().getJson(list);
+        String response;
+
+        assert type != null;
+        if (type.toLowerCase().equals("xml")){
+            response = util.getXml(list);
+        }else{
+            response = util.getJson(list);
+        }
 
         return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(response);
     }

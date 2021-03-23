@@ -2,9 +2,19 @@ package sk.kosickaakademia.company.util;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import sk.kosickaakademia.company.entity.Statistic;
 import sk.kosickaakademia.company.entity.User;
+import sk.kosickaakademia.company.log.Log;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -65,6 +75,77 @@ public class Util {
         }
 
         return "{}";
+    }
+
+    public String getXml(List<User> list){
+        try {
+            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+            Document document = documentBuilder.newDocument();
+
+            // root element
+            Element root = document.createElement("data");
+            document.appendChild(root);
+
+            // dateTime element
+            Element dateTime = document.createElement("dateTime");
+            dateTime.appendChild(document.createTextNode(getDateTime()));
+            root.appendChild(dateTime);
+
+            // count element
+            Element count = document.createElement("count");
+            count.appendChild(document.createTextNode(String.valueOf(list.size())));
+            root.appendChild(count);
+
+            // users element
+            Element users = document.createElement("users");
+            root.appendChild(users);
+
+            for (User temp :
+                    list) {
+                // user element
+                Element user = document.createElement("user");
+                users.appendChild(user);
+
+                // id element
+                Element id = document.createElement("id");
+                id.appendChild(document.createTextNode(Integer.toString(temp.getId())));
+                user.appendChild(id);
+
+                // fname element
+                Element fname = document.createElement("fname");
+                fname.appendChild(document.createTextNode(temp.getfName()));
+                user.appendChild(fname);
+
+                // lname element
+                Element lname = document.createElement("lname");
+                lname.appendChild(document.createTextNode(temp.getlName()));
+                user.appendChild(lname);
+
+                // age element
+                Element age = document.createElement("age");
+                age.appendChild(document.createTextNode(Integer.toString(temp.getAge())));
+                user.appendChild(age);
+
+                // gender element
+                Element gender = document.createElement("gender");
+                gender.appendChild(document.createTextNode(temp.getGender().toString()));
+                user.appendChild(gender);
+            }
+
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(document), new StreamResult(writer));
+            String output = writer.getBuffer().toString().replaceAll("[\n\r]", "");
+
+            return output;
+        } catch (ParserConfigurationException | TransformerException e) {
+            Log.error(e.toString());
+            return null;
+        }
+
     }
 
     public static String getDateTime(){
